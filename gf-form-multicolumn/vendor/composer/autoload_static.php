@@ -4,46 +4,29 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfe1240e83bedcde928b3f6f3db07da3f {
-	public static $prefixLengthsPsr4 = [
-		'W' =>
-			[
-				'WH\\GF\\Multicolumn\\Site\\'         => 23,
-				'WH\\GF\\Multicolumn\\Classes\\'      => 26,
-				'WH\\GF\\Multicolumn\\Admin\\Field\\' => 30,
-				'WH\\GF\\Multicolumn\\Admin\\'        => 24,
-				'WH\\GF\\Multicolumn\\'               => 18,
-			],
-	];
+class ComposerStaticInitfe1240e83bedcde928b3f6f3db07da3f
+{
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'WH\\GF\\Multicolumn\\Admin\\Field\\WH_GF_Multicolumn_Field_Column_End' => __DIR__ . '/../..' . '/includes/admin/field/WH_GF_Multicolumn_Field_Column_End.php',
+        'WH\\GF\\Multicolumn\\Admin\\Field\\WH_GF_Multicolumn_Field_Column_Separator' => __DIR__ . '/../..' . '/includes/admin/field/WH_GF_Multicolumn_Field_Column_Separator.php',
+        'WH\\GF\\Multicolumn\\Admin\\Field\\WH_GF_Multicolumn_Field_Column_Start' => __DIR__ . '/../..' . '/includes/admin/field/WH_GF_Multicolumn_Field_Column_Start.php',
+        'WH\\GF\\Multicolumn\\Admin\\Field\\WH_GF_Multicolumn_Field_Group' => __DIR__ . '/../..' . '/includes/admin/field/WH_GF_Multicolumn_Field_Group.php',
+        'WH\\GF\\Multicolumn\\Admin\\WH_GF_Multicolumn_Admin' => __DIR__ . '/../..' . '/includes/admin/WH_GF_Multicolumn_Admin.php',
+        'WH\\GF\\Multicolumn\\Classes\\WH_GF_Multicolumn' => __DIR__ . '/../..' . '/includes/WH_GF_Multicolumn.php',
+        'WH\\GF\\Multicolumn\\Classes\\WH_GF_Multicolumn_Activator' => __DIR__ . '/../..' . '/includes/WH_GF_Multicolumn_Activator.php',
+        'WH\\GF\\Multicolumn\\Classes\\WH_GF_Multicolumn_Logger' => __DIR__ . '/../..' . '/includes/WH_GF_Multicolumn_Logger.php',
+        'WH\\GF\\Multicolumn\\Classes\\WH_GF_Multicolumn_Uninstaller' => __DIR__ . '/../..' . '/includes/WH_GF_Multicolumn_Uninstaller.php',
+        'WH\\GF\\Multicolumn\\Classes\\WH_GF_Multicolumn_i18n' => __DIR__ . '/../..' . '/includes/WH_GF_Multicolumn_i18n.php',
+        'WH\\GF\\Multicolumn\\Site\\WH_GF_Multicolumn_Public' => __DIR__ . '/../..' . '/includes/public/WH_GF_Multicolumn_Public.php',
+        'WH\\GF\\Multicolumn\\Site\\WH_GF_Multicolumn_Public_Form_Current' => __DIR__ . '/../..' . '/includes/public/WH_GF_Multicolumn_Public_Form_Current.php',
+    );
 
-	public static $prefixDirsPsr4 = [
-		'WH\\GF\\Multicolumn\\Site\\'         =>
-			[
-				0 => __DIR__ . '/../..' . '/includes/public',
-			],
-		'WH\\GF\\Multicolumn\\Classes\\'      =>
-			[
-				0 => __DIR__ . '/../..' . '/includes',
-			],
-		'WH\\GF\\Multicolumn\\Admin\\Field\\' =>
-			[
-				0 => __DIR__ . '/../..' . '/includes/admin/field',
-			],
-		'WH\\GF\\Multicolumn\\Admin\\'        =>
-			[
-				0 => __DIR__ . '/../..' . '/includes/admin',
-			],
-		'WH\\GF\\Multicolumn\\'               =>
-			[
-				0 => __DIR__ . '/../..' . '/',
-			],
-	];
+    public static function getInitializer(ClassLoader $loader)
+    {
+        return \Closure::bind(function () use ($loader) {
+            $loader->classMap = ComposerStaticInitfe1240e83bedcde928b3f6f3db07da3f::$classMap;
 
-	public static function getInitializer( ClassLoader $loader ) {
-		return \Closure::bind( function () use ( $loader ) {
-			$loader->prefixLengthsPsr4 = ComposerStaticInitfe1240e83bedcde928b3f6f3db07da3f::$prefixLengthsPsr4;
-			$loader->prefixDirsPsr4    = ComposerStaticInitfe1240e83bedcde928b3f6f3db07da3f::$prefixDirsPsr4;
-
-		}, null, ClassLoader::class );
-	}
+        }, null, ClassLoader::class);
+    }
 }

@@ -82,17 +82,7 @@ class WH_GF_Multicolumn_Public_Form_Current {
 		$gfInstallation      = get_plugin_data( $this->pluginDirectory );
 		$gravityFormsVersion = $gfInstallation['Version'];
 
-		if ( substr_count( $gravityFormsVersion, '.' ) > 1 ) {
-			$lastPeriod          = strrpos( $gravityFormsVersion, '.' ) - 1;
-			$gravityFormsVersion = (float) substr( $gravityFormsVersion, 0,
-			                                       strlen
-			                                       ( $gravityFormsVersion )
-			                                       - $lastPeriod );
-		} else {
-			$gravityFormsVersion = (float) $gravityFormsVersion;
-		}
-
-		if ( $gravityFormsVersion >= 2.5 && $this->gfLegacyVersion == 2 ) {
+		if ( version_compare( $gravityFormsVersion, '2.5', '>=' ) && $this->gfLegacyVersion == 2 ) {
 			add_filter(
 				'gform_field_container',
 				array ( $this, 'define_output_elements_2_5' ),

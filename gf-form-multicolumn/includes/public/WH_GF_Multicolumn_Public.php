@@ -102,8 +102,7 @@ class WH_GF_Multicolumn_Public {
 	}
 
 	private function get_gfmc_javascript_version() {
-		return ( floatval( \GFForms::$version ) >= 2.5 && $this->gfLegacyVersion >
-		                                                  1 )
+		return ( version_compare( \GFForms::$version, '2.5', '>=' ) && $this->gfLegacyVersion > 1 )
 			? '2.5' : '2.4';
 	}
 }

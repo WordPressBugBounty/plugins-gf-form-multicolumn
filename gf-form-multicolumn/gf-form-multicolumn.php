@@ -1,69 +1,106 @@
 <?php
-/*
- * Plugin Name: Multiple Columns for Gravity Forms
- * Plugin URI: https://wordpress.org/plugins/gf-form-multicolumn/
- * Description: Introduces new form elements into Gravity Forms which allow rows to be split into multiple columns.
- * Author: WebHolism
- * Author URI: http://www.webholism.com
- * Version: 4.0.8
- * Text Domain: gf-form-multicolumn
- * License: GPLv3
- * License URI: http://www.gnu.org/licenses/gpl-3.0
- * Domain Path: /languages
+/**
+ * Plugin Name:       Multiple Columns for Gravity Forms
+ * Plugin URI:        https://webholism.com/
+ * Description:       Adds multi-column capabilities to Gravity Forms.
+ * Version:           4.1.0
+ * Author:            Webholism
+ * Author URI:        https://webholism.com/
+ * Text Domain:       gf-form-multicolumn
+ * Domain Path:       /languages
+ *
+ * @package WH\GF\Multicolumn
  */
+
+namespace WH\GF\Multicolumn;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'LOG_PATH', __DIR__ . '/log/' );
-define( 'LOG_LEVEL', 'DEBUG' );
+// Load Composer autoloader in development, or register native SPL fallback in production.
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		function ( $class_name ) {
+			$prefix = 'WH\\GF\\Multicolumn\\';
+			$len    = strlen( $prefix );
 
-require __DIR__ . '/vendor/autoload.php';
+			if ( 0 !== strncmp( $prefix, $class_name, $len ) ) {
+				return;
+			}
 
-use WH\GF\Multicolumn;
-use WH\GF\Multicolumn\Classes\WH_GF_Multicolumn_Activator;
-use WH\GF\Multicolumn\Classes\WH_GF_Multicolumn_Uninstaller;
+			$relative_class = substr( $class_name, $len );
+			$parts          = explode( '\\', $relative_class );
+			$short_class    = array_pop( $parts );
+			$slug           = strtolower( str_replace( '_', '-', $short_class ) );
 
-add_action( 'gform_loaded', [
-	'WH_GF_Multicolumn_Bootstrap',
-	'load',
-], 5 );
+			$subpath = empty( $parts ) ? '' : implode( DIRECTORY_SEPARATOR, $parts ) . DIRECTORY_SEPARATOR;
+			$base    = __DIR__ . '/includes/' . $subpath;
+
+			$class_file = $base . 'class-' . $slug . '.php';
+			if ( file_exists( $class_file ) ) {
+				require_once $class_file;
+				return;
+			}
+
+			$interface_file = $base . 'interface-' . $slug . '.php';
+			if ( file_exists( $interface_file ) ) {
+				require_once $interface_file;
+				return;
+			}
+
+			$trait_file = $base . 'trait-' . $slug . '.php';
+			if ( file_exists( $trait_file ) ) {
+				require_once $trait_file;
+			}
+		}
+	);
+}
+
+add_action( 'gform_loaded', array( 'WH\GF\Multicolumn\GFMC_Loader', 'load' ), 5 );
 
 /**
- * Class GFMC_Bootstrap
+ * Main loader class for initializing the Gravity Forms AddOn.
  */
-class WH_GF_Multicolumn_Bootstrap {
+class GFMC_Loader {
+
+
+
+	/**
+	 * Instantiates and registers the main plugin controller.
+	 *
+	 * @return void
+	 */
 	public static function load() {
-		if ( ! method_exists( '\GFForms', 'include_addon_framework' ) ) {
+		if ( ! method_exists( 'GFForms', 'include_addon_framework' ) ) {
 			return;
-		} else {
-			GFAddOn::register( 'WH\GF\Multicolumn\Classes\WH_GF_Multicolumn' );
-			WH\GF\Multicolumn\Classes\WH_GF_Multicolumn::get_instance();
 		}
+
+		\GFForms::include_addon_framework();
+		Plugin::get_instance();
 	}
 }
 
-WH_GF_Multicolumn_Bootstrap::load();
+/**
+ * Plugin activation hook callback.
+ *
+ * @return void
+ */
+function gfmc_plugin_activate() {
+	Activator::activate();
+}
 
 /**
- * Activation is responsible for adding form options
- * gfmc_enable_css and gfmc_enable_js.
- * Uninstall will remove those settings and delete all multicolumn form
- * element entries.
+ * Plugin uninstallation hook callback.
+ *
+ * @return void
  */
-register_activation_hook( __FILE__, 'gfmc_plugin_activate' );
-register_uninstall_hook( __FILE__, 'gfmc_plugin_uninstall' );
-
-function gfmc_plugin_activate() {
-	$activator = new WH_GF_Multicolumn_Activator();
-	$activator->gfmc_activate();
-}
-
 function gfmc_plugin_uninstall() {
-	// The Gravity Forms AddOns automatically deletes: Form settings, Plugin
-	// settings, Entry meta & Version information
-	$uninstaller = new WH_GF_Multicolumn_Uninstaller();
-	$uninstaller->gfmc_uninstall();
+	// Execute uninstaller routines.
+	Uninstaller::uninstall();
 }
+
+register_activation_hook( __FILE__, __NAMESPACE__ . '\gfmc_plugin_activate' );
